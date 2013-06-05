@@ -1,0 +1,39 @@
+{
+    "name": "net_bazzline/php_configuration_format_converter",
+    "type": "library",
+    "description": "php that converts following configuration formats: xml, php array, yaml, json",
+    "keywords": ["php", "bazzline", "configuration", "converter", "xml", "json", "php array", "yaml"],
+    "homepage": "https://github.com/stevleibelt/php_configuration_format_converter",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "stev leibelt",
+            "email": "artodeto@arcor.de",
+            "homepage": "http://artodeto.bazzline.net",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3",
+        "net_bazzline/php_symfony_console_application": "dev-master",
+        "net_bazzline/php_component_converter": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "mikey179/vfsStream": "dev-master",
+	    "mockery/mockery": "dev-master"
+    },
+    "bin": [
+            "bin/net_bazzline_configuration_format_converter.php"
+    ],
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": {
+            "Net\\Bazzline\\ConfigurationFormatConverter": "source/",
+            "Test\\Net\\Bazzline\\ConfigurationFormatConverter": "test/"
+        }
+    }
+}
