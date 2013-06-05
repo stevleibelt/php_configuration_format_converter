@@ -22,6 +22,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ConvertCommand extends Command
 {
     /**
+     * @var string
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    private $destination;
+
+    /**
+     * @var string
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    private $source;
+
+    /**
      * @author stev leibelt <artodeto@arcor.de>
      * @since 2013-06-06
      */
@@ -53,6 +67,19 @@ class ConvertCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->validateArguments();
+        //@todo set converters by source and destination
+        //@todo convert source to php array and php array to destination
+        //@todo write destination
+    }
+
+    /**
+     * @throws \Net\Bazzline\Component\Converter\InvalidArgumentException
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    private function validateArguments()
+    {
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
 
@@ -62,5 +89,10 @@ class ConvertCommand extends Command
                 'source: "' . $source . '"'
             );
         }
+        //@todo get source and destination file extension and check if they are supported
+        //@todo check if path of destination is writeable
+
+        $this->destination = $destination;
+        $this->source = $source;
     }
 }
