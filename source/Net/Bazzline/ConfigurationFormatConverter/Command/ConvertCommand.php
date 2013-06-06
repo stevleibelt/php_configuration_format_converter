@@ -11,6 +11,7 @@ use Net\Bazzline\Symfony\Console\Command\Command;
 use Net\Bazzline\Component\Converter\ConverterFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use RuntimeException;
 
@@ -37,6 +38,13 @@ class ConvertCommand extends Command
      * @since 2013-06-06
      */
     const ARGUMENT_SOURCE = 'source';
+
+    /**
+     * @var string
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    const OPTION_FORCE = 'force';
 
     /**
      * @var string
@@ -86,6 +94,12 @@ class ConvertCommand extends Command
                         self::ARGUMENT_DESTINATION,
                         InputArgument::REQUIRED,
                         'The destination file for your conversation.'
+                    ),
+                    new InputOption(
+                        '--' . self::OPTION_FORCE,
+                        '-f',
+                        InputOption::VALUE_NONE,
+                        'The destination is overwritten if exists.'
                     )
                 )
             )
@@ -122,8 +136,17 @@ class ConvertCommand extends Command
      */
     private function setSourceAndDestination()
     {
-        $source = $this->io->getArgument('source');
-        $destination = $this->io->getArgument('destination');
+        $source = $this->io->getArgument(self::ARGUMENT_SOURCE);
+        $destination = $this->io->getArgument(self::ARGUMENT_DESTINATION);
+        $isForced = $this->io->getOption(self::OPTION_FORCE);
+
+        if (file_exists($destination)
+            && !$isForced) {
+            throw new RuntimeException(
+                'Destination "' . $this->destination . '" already exists.' . PHP_EOL .
+                'Use --' . self::OPTION_FORCE . ' to overwrite.'
+            );
+        }
 
         if (!file_exists($source)) {
             throw new InvalidArgumentException(
@@ -246,9 +269,10 @@ return ' . var_export($content, true) . '
             $destinationContent = $content;
         }
 
-        file_put_contents(
-            $this->destination,
-            $destinationContent
-        );
+        if (file_put_contents($this->destination, $destinationContent) === false) {
+            throw new RuntimeException(
+                'Writing of destination file content was not sucessfull.'
+            );
+        }
     }
 }
