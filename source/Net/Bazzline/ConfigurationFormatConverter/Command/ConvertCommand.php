@@ -8,6 +8,7 @@ namespace Net\Bazzline\ConfigurationFormatConverter\Command;
 
 use Net\Bazzline\Component\Converter\InvalidArgumentException;
 use Net\Bazzline\Symfony\Console\Command\Command;
+use Net\Bazzline\Component\Converter\ConverterFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,7 +28,28 @@ class ConvertCommand extends Command
      * @author stev leibelt <artodeto@arcor.de>
      * @since 2013-06-06
      */
+    const ARGUMENT_DESTINATION = 'destination';
+
+    /**
+     * @var string
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    const ARGUMENT_SOURCE = 'source';
+
+    /**
+     * @var string
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
     private $destination;
+
+    /**
+     * @var \Net\Bazzline\Component\Converter\ConverterInterface
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since
+     */
+    private $destinationConverter;
 
     /**
      * @var string
@@ -35,6 +57,13 @@ class ConvertCommand extends Command
      * @since 2013-06-06
      */
     private $source;
+
+    /**
+     * @var \Net\Bazzline\Component\Converter\ConverterInterface
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since
+     */
+    private $sourceConverter;
 
     /**
      * @author stev leibelt <artodeto@arcor.de>
@@ -47,8 +76,16 @@ class ConvertCommand extends Command
             ->setDescription('converts files from one format to another')
             ->setDefinition(
                 array(
-                    new InputArgument('source', InputArgument::REQUIRED, 'The existing source file you want to convert.'),
-                    new InputArgument('destination', InputArgument::REQUIRED, 'The destination file for your conversation.')
+                    new InputArgument(
+                        self::ARGUMENT_SOURCE,
+                        InputArgument::REQUIRED,
+                        'The existing source file you want to convert.'
+                    ),
+                    new InputArgument(
+                        self::ARGUMENT_DESTINATION,
+                        InputArgument::REQUIRED,
+                        'The destination file for your conversation.'
+                    )
                 )
             )
             ->setHelp(
@@ -70,18 +107,20 @@ class ConvertCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->validateArguments();
-        //@todo set converters by source and destination
+        $this->setSourceAndDestination();
+        $this->setConverters();
         //@todo convert source to php array and php array to destination
         //@todo write destination
     }
 
     /**
+     * Validates input arguments and set private properties.
+     *
      * @throws \Net\Bazzline\Component\Converter\InvalidArgumentException
      * @author stev leibelt <artodeto@arcor.de>
      * @since 2013-06-06
      */
-    private function validateArguments()
+    private function setSourceAndDestination()
     {
         $source = $this->io->getArgument('source');
         $destination = $this->io->getArgument('destination');
@@ -112,9 +151,9 @@ class ConvertCommand extends Command
             );
         }
 
-        if (!is_writeable(dirname($destination))) {
+        if (!is_writable(dirname($destination))) {
             throw new RuntimeException(
-                'Destionation is not writeable.'
+                'Destination is not writable.'
             );
         }
 
@@ -151,5 +190,31 @@ class ConvertCommand extends Command
         $supportedExtension = array('xml' => true, 'yaml' => true, 'php' => true, 'json' => true);
 
         return isset($supportedExtension[strtolower($extension)]);
+    }
+
+    /**
+     * Sets converters by content of source and destination
+     *
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    private function setConverters()
+    {
+        $converterFactory = ConverterFactory::buildDefault();
+        $extensionToConverter = array(
+            'php' => 'Net\Bazzline\Component\Converter\PhpArrayConverter',
+            'json' => 'Net\Bazzline\Component\Converter\JSONConverter',
+            'yaml' => 'Net\Bazzline\Component\Converter\YAMLConverter',
+            'xml' => 'Net\Bazzline\Component\Converter\XMLConverter'
+        );
+
+        $destinationExtension = strtolower($this->getFileExtension($this->destination));
+        $sourceExtension = strtolower($this->getFileExtension($this->source));
+
+        $destinationConverterName = $extensionToConverter[$destinationExtension];
+        $sourceConverterName = $extensionToConverter[$sourceExtension];
+
+        $this->destinationConverter = $converterFactory->get($destinationConverterName);
+        $this->sourceConverter = $converterFactory->get($sourceConverterName);
     }
 }
