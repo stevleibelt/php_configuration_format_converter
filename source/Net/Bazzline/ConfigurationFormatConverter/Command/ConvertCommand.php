@@ -11,6 +11,7 @@ use Net\Bazzline\Symfony\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use RuntimeException;
 
 /**
  * Class ConvertCommand
@@ -102,6 +103,7 @@ class ConvertCommand extends Command
                 'Use --help to list supported formats.'
             );
         }
+
         if ($sourceExtension == $source
             || !$this->isFileExtensionSupported($sourceExtension)) {
             throw new InvalidArgumentException(
@@ -109,7 +111,12 @@ class ConvertCommand extends Command
                 'Use --help to list supported formats.'
             );
         }
-        //@todo check if path of destination is writeable
+
+        if (!is_writeable(dirname($destination))) {
+            throw new RuntimeException(
+                'Destionation is not writeable.'
+            );
+        }
 
         $this->destination = $destination;
         $this->source = $source;
