@@ -80,8 +80,8 @@ class ConvertCommand extends Command
      */
     private function validateArguments()
     {
-        $source = $input->getArgument('source');
-        $destination = $input->getArgument('destination');
+        $source = $this->io->getArgument('source');
+        $destination = $this->io->getArgument('destination');
 
         if (!file_exists($source)) {
             throw new InvalidArgumentException(
