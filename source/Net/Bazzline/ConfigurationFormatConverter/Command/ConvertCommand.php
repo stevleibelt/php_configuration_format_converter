@@ -148,9 +148,10 @@ class ConvertCommand extends Command
             );
         }
 
-        if (!file_exists($source)) {
+        if (!file_exists($source)
+            || !is_readable($source)) {
             throw new InvalidArgumentException(
-                'Provided source file does not exists! ' . PHP_EOL .
+                'Provided source file does not exists or is not readable! ' . PHP_EOL .
                 'source: "' . $source . '"'
             );
         }
