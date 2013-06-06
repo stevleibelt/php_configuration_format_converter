@@ -20,6 +20,7 @@ use RuntimeException;
  * @package Net\Bazzline\ConfigurationFormatConverter
  * @author stev leibelt <artodeto@arcor.de>
  * @since 2013-06-06
+ * @todo replace file related stuff with finished https://github.com/stevleibelt/php_component_filesystem
  */
 class ConvertCommand extends Command
 {
@@ -47,7 +48,7 @@ class ConvertCommand extends Command
     /**
      * @var \Net\Bazzline\Component\Converter\ConverterInterface
      * @author stev leibelt <artodeto@arcor.de>
-     * @since
+     * @since 2013-06-06
      */
     private $destinationConverter;
 
@@ -109,8 +110,7 @@ class ConvertCommand extends Command
     {
         $this->setSourceAndDestination();
         $this->setConverters();
-        //@todo convert source to php array and php array to destination
-        //@todo write destination
+        $this->writeDestinationContent();
     }
 
     /**
@@ -216,5 +216,39 @@ class ConvertCommand extends Command
 
         $this->destinationConverter = $converterFactory->get($destinationConverterName);
         $this->sourceConverter = $converterFactory->get($sourceConverterName);
+
+        $this->sourceConverter->fromSource(file_get_contents($this->source));
+    }
+
+    /**
+     * Uses destination and source converter to write destination content
+     *
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    private function writeDestinationContent()
+    {
+        $this->destinationConverter->fromPhpArray($this->sourceConverter->toPhpArray());
+
+        $content = $this->destinationConverter->toSource();
+        if (is_array($content)) {
+            $destinationContent = '<?php
+/**
+ * Converted configuration from source "' . $this->source . '"
+ *
+ * @author net_bazzline/php_component_converter
+ * @since ' . date('Y-m-d') . '
+ */
+
+return ' . var_export($content, true) . '
+';
+        } else {
+            $destinationContent = $content;
+        }
+
+        file_put_contents(
+            $this->destination,
+            $destinationContent
+        );
     }
 }
