@@ -52,7 +52,9 @@ class ConvertCommand extends Command
             )
             ->setHelp(
                 'The <info>%command.name%</info> command is converting the ' . PHP_EOL .
-                'provided source file to the destination file.' . PHP_EOL
+                'provided source file to the destination file.' . PHP_EOL .
+                PHP_EOL .
+                'Supported formats are ".yaml", ".json", ".php" and ".xml"' . PHP_EOL
             )
         ;
     }
@@ -89,10 +91,58 @@ class ConvertCommand extends Command
                 'source: "' . $source . '"'
             );
         }
-        //@todo get source and destination file extension and check if they are supported
+
+        $destinationExtension = $this->getFileExtension($destination);
+        $sourceExtension = $this->getFileExtension($source);
+
+        if ($destinationExtension == $destination
+            || !$this->isFileExtensionSupported($destinationExtension)) {
+            throw new InvalidArgumentException(
+                'Destination has to be a supported format.' . PHP_EOL .
+                'Use --help to list supported formats.'
+            );
+        }
+        if ($sourceExtension == $source
+            || !$this->isFileExtensionSupported($sourceExtension)) {
+            throw new InvalidArgumentException(
+                'Source has to be a supported format.' . PHP_EOL .
+                'Use --help to list supported formats.'
+            );
+        }
         //@todo check if path of destination is writeable
 
         $this->destination = $destination;
         $this->source = $source;
+    }
+
+    /**
+     * Returns the assumed file extension. Assumed that the extension is the
+     *  last string after the last available dot (".")
+     *
+     * @param string $fileName
+     * @return string
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    private function getFileExtension($fileName)
+    {
+        $fileNameAsArray = explode('.', $fileName);
+
+        return (string) end($fileNameAsArray);
+    }
+
+    /**
+     * Validates if given file extension is supported
+     *
+     * @param string $extension
+     * @return bool
+     * @author stev leibelt <artodeto@arcor.de>
+     * @since 2013-06-06
+     */
+    private function isFileExtensionSupported($extension)
+    {
+        $supportedExtension = array('xml' => true, 'yaml' => true, 'php' => true, 'json' => true);
+
+        return isset($supportedExtension[strtolower($extension)]);
     }
 }
