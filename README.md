@@ -10,10 +10,12 @@ Install it via:
 
 ## Usage
 
-Simple switch to the directory via console and typ `bin/net_bazzline_configuration_format_converter.php`.  
-
-This will display the help screen. To start converting stuff, add source and destination behind the command `convert` like `bin/net_bazzline_configuration_format_converter.php convert my/source/file.yaml my/destination/file.php`.  
-
+Simple switch to the directory via console and typ `bin/net_bazzline_configuration_format_converter.php`. This will display the help screen. 
+  
+To start converting, add source and destination behind the command `convert`.
+  
+`bin/net_bazzline_configuration_format_converter.php convert my/source/file.yaml my/destination/file.php`
+  
 The tool decides on the given file extension how he has to handle the conversation. File extensions can be uppercase, lowercase, whatevercase.  
 
 ## Supported formats
