@@ -1,6 +1,6 @@
 <?php
 /**
- * Converted configuration from source "example/fromYamlToPhp.yaml"
+ * Converted configuration from source "example/sourceFromYamlToPhp.yaml"
  *
  * @author net_bazzline/php_component_converter
  * @since 2013-06-07

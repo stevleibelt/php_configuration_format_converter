@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<foo>
-    <bar>
-        foobar
-    </bar>
-    <barz>
-        foobarz
-    </barz>
-    <anotherArray>
-        <0>
-            --
-        </0>
-        <10>
-            42
-        </10>
-        <99>
-            13
-        </99>
-    </anotherArray>
-    <arrayWithKeys>
-        <0>
-            foo
-        </0>
-        <1>
-            bar
-        </1>
-        <2>
+<config>
+    <foo>
+        <bar>
             foobar
-        </2>
-    </arrayWithKeys>
-</foo>
-<fup>
-    fuppes
-</fup>
+        </bar>
+        <barz>
+            foobarz
+        </barz>
+        <anotherArray>
+            --
+        </anotherArray>
+        <anotherArray>
+            42
+        </anotherArray>
+        <anotherArray>
+            13
+        </anotherArray>
+        <arrayWithKeys>
+            foo
+        </arrayWithKeys>
+        <arrayWithKeys>
+            bar
+        </arrayWithKeys>
+        <arrayWithKeys>
+            foobar
+        </arrayWithKeys>
+    </foo>
+    <fup>
+        fuppes
+    </fup>
+</config>
