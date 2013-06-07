@@ -1,4 +1,12 @@
 foo:
     bar: foobar
     barz: foobarz
+    anotherArray:
+        0: --
+        10: 42
+        99: 13
+    arrayWithKeys:
+        - foo
+        - bar
+        - foobar
 fup: fuppes
