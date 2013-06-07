@@ -25,4 +25,4 @@ return array (
     ),
   ),
   'fup' => 'fuppes',
-)
+);

@@ -241,7 +241,12 @@ class ConvertCommand extends Command
         $this->destinationConverter = $converterFactory->get($destinationConverterName);
         $this->sourceConverter = $converterFactory->get($sourceConverterName);
 
-        $this->sourceConverter->fromSource(file_get_contents($this->source));
+        if ($this->getFileExtension($this->source) == 'php') {
+            $sourceContent = require_once($this->source);
+        } else {
+            $sourceContent = file_get_contents($this->source);
+        }
+        $this->sourceConverter->fromSource($sourceContent);
     }
 
     /**
@@ -264,7 +269,7 @@ class ConvertCommand extends Command
  * @since ' . date('Y-m-d') . '
  */
 
-return ' . var_export($content, true) . '
+return ' . var_export($content, true) . ';
 ';
         } else {
             $destinationContent = $content;
