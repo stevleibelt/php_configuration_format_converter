@@ -4,7 +4,7 @@
     "description": "php that converts following configuration formats: xml, php array, yaml, json",
     "keywords": ["php", "bazzline", "configuration", "converter", "xml", "json", "php array", "yaml"],
     "homepage": "https://github.com/stevleibelt/php_configuration_format_converter",
-    "license": "GPLv3",
+    "license": "LGPLv3",
     "authors": [
         {
             "name": "stev leibelt",
